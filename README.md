@@ -1,52 +1,58 @@
 # DarkShield
 
-DarkShield is a full-stack repository security assessment platform built for ethical hacking and applied cryptography demos.
-It clones a GitHub repository, scans it for leaked secrets and vulnerable dependencies, runs static analysis, scores the risk,
-generates an AI-assisted summary, and signs the final report so its integrity can be verified later.
+DarkShield is a full-stack repository security assessment platform for ethical hacking and applied cryptography.
+It scans GitHub repositories for leaked secrets, insecure code patterns, vulnerable dependencies, and git-history exposure,
+then signs the final report so its integrity can be verified later.
 
-## What it does
+## Presentation Summary
 
-- Clones public GitHub repositories for analysis
-- Detects secrets with regex, entropy analysis, and git-history scanning
-- Runs Semgrep for code-pattern and OWASP-oriented static analysis
-- Runs Trivy for dependency vulnerability scanning
-- Optionally enriches results with CodeQL-style analysis
-- Generates AI reasoning and remediation hints through Groq
-- Stores scan results in Supabase/Postgres
-- Signs scan summaries with RSA-PSS/SHA-256
-- Verifies signed reports through a dedicated integrity-check page
+DarkShield helps a user register a repository, run a security scan, and review the results in a dashboard.
+It combines manual-style security checks with automated tools and cryptographic integrity verification.
 
-## Architecture
+## Core Capabilities
 
-- Frontend: Next.js 16 + React
-- Backend: FastAPI
-- Database: Supabase/Postgres
-- AI: Groq
-- Security tools: Semgrep, Trivy, git history scanner, custom secret scanner
-- Cryptography: RSA report signing, Fernet snippet encryption, HMAC secret hashing
+- Repository cloning and validation
+- Secret detection using regex, entropy, and git-history analysis
+- Static analysis with Semgrep
+- Dependency scanning with Trivy
+- Optional CodeQL-style analysis
+- AI-assisted risk summaries and remediation hints through Groq
+- Postgres persistence through Supabase
+- RSA-PSS/SHA-256 report signing and verification
 
-## Main pages
+## Tools Used
 
-- `Repositories` dashboard: register repos, run scans, view findings
-- `Cross-Repo Clusters`: show reused secrets across repositories
-- `Report Verifier`: verify payload integrity with the public key
+- `FastAPI` for the backend API
+- `Next.js` and `React` for the frontend UI
+- `Supabase/Postgres` for storage
+- `Semgrep` for code-pattern and OWASP-oriented scanning
+- `Trivy` for dependency vulnerability scanning
+- `Groq` for AI summaries and fix suggestions
+- `RSA-PSS/SHA-256` for report integrity
+- `Fernet` and `HMAC-SHA256` for data protection helpers
 
-## Scan pipeline
+## Main Screens
+
+- `Repositories`: add a repository, scan it, and inspect findings
+- `Cross-Repo Clusters`: find secrets reused across multiple repos
+- `Report Verifier`: confirm a signed payload has not been tampered with
+
+## Scan Flow
 
 1. Validate the GitHub URL
 2. Clone the repository
-3. Profile the tech stack
+3. Detect the tech stack
 4. Scan for secrets
 5. Scan git history
 6. Run Semgrep
 7. Run Trivy
 8. Run CodeQL-style analysis
-9. Correlate findings and compute security score
-10. Generate AI summary
-11. Sign the report with RSA-PSS/SHA-256
-12. Store results in Supabase
+9. Correlate findings and compute a score
+10. Generate AI reasoning
+11. Sign the report
+12. Save everything to Supabase
 
-## Setup
+## Run Locally
 
 ### Backend
 
@@ -67,19 +73,19 @@ npm run build
 npm start
 ```
 
-## Environment variables
+## Environment Variables
 
-The backend expects these values in `backend/.env`:
+Backend `backend/.env`:
 
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
 - `GROQ_API_KEY`
 - `HMAC_SECRET_KEY`
 - `ENCRYPTION_KEY`
-- `GITHUB_TOKEN` for GitHub API rate limits
-- Optional SMTP settings for critical alerts
+- `GITHUB_TOKEN`
+- Optional SMTP settings
 
-The frontend expects:
+Frontend:
 
 - `NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000`
 
@@ -89,18 +95,12 @@ The frontend expects:
 - Frontend: `http://127.0.0.1:3000`
 - Swagger docs: `http://127.0.0.1:8000/docs`
 
-## Demo flow
+## Demo Steps
 
 1. Open the dashboard
-2. Add a GitHub repository URL
+2. Add a GitHub repository
 3. Run a scan
-4. Review findings and security score
+4. Review findings and score
 5. Open the report verifier
-6. Verify the signed payload
-7. Modify the JSON payload and verify again to see tamper detection
-
-## Notes
-
-- The repo includes a custom crypto-misuse Semgrep rule pack and frontend security rules.
-- Scan reports are signed separately from the vulnerability findings so the report itself can be checked for tampering.
-- The project is intentionally built as a security lab so it can demonstrate offensive and defensive tooling in one workflow.
+6. Verify the signature
+7. Change the JSON and verify again to show tamper detection
